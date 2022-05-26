@@ -9,6 +9,20 @@ app.get("/api", (req, res) => {
   });
 });
 
+app.post("/api/login", (req, res) => {
+  const usr = {
+    id: 1,
+    name: "John",
+    email: "john@email.com",
+  };
+
+  jwt.sign({ usr: usr }, "secretkey", (err, token) => {
+    res.json({
+      token,
+    });
+  });
+});
+
 app.listen(3000, (req, res) => {
   console.log("Server runnin on port 3000");
 });
