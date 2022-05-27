@@ -1,3 +1,4 @@
+const { application } = require("express");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 
@@ -9,20 +10,37 @@ app.get("/api", (req, res) => {
   });
 });
 
+app.post("/api/posts", verifyToken, (req, res) => {
+  jwt.verify(req.token, "secretkey", (err, authData) => {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+      res.json({
+        message: "Posts created!!!",
+        authData,
+      });
+    }
+  });
+});
+
 app.post("/api/login", (req, res) => {
   const usr = {
     id: 1,
     name: "John",
     email: "john@email.com",
   };
- 
-  jwt.sign({
-    usr: usr
-  }, "secretkey", (err, token) => {
-    res.json({
-      token,
-    });
-  });
+
+  jwt.sign(
+    {
+      usr: usr,
+    },
+    "secretkey",
+    (err, token) => {
+      res.json({
+        token,
+      });
+    }
+  );
 });
 
 function verifyToken(req, res, next) {
@@ -32,7 +50,7 @@ function verifyToken(req, res, next) {
     req.token = bearerToken;
     next();
   } else {
-    res.sendStatus(403)
+    res.sendStatus(403);
   }
 }
 
